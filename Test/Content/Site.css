@@ -1,0 +1,29 @@
+﻿
+:root {
+    --color1: #0270AF;
+    --color2: #202C33;
+    --color3: #5BBCF5;
+}
+
+.bg-color1 {
+    background: var(--color1);
+}
+.bg-color2 {
+    background: var(--color2);
+}
+.bg-color3 {
+    background: var(--color3);
+}
+
+.t-color1 {
+    color: var(--color1);
+}
+
+.t-color2 {
+    color: var(--color2);
+}
+
+.t-color3 {
+    color: var(--color3);
+}
+
