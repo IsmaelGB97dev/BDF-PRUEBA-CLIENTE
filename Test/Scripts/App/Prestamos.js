@@ -11,22 +11,81 @@ let ddCliente = $("#ddCliente"),
     txtMontoAprobado = $("#txtMontoAprobado"),
     txtPlazoFinanciamiento = $("#txtPlazoFinanciamiento"),
     ddEstado = $("#ddEstado"),
-    formPrestamo = $("#formPrestamo");
+    hdPrestamo = $("#hdPrestamo"),
+    formPrestamo = $("#formPrestamo"),
+    btnCancelar = $("#btnCancelar");
 
 
 btnNuevo.on("click", function () {
     modalPrestamo.modal("show");
 })
 
+btnNuevo.hide();
+
 ddCliente.on('change', function (e) {
     let seleccion = ddCliente.val();
-    ObtenerPrestamos(seleccion);
+    if (ddCliente.val() == "0") {
+        tbodyPrestamos.html("");
+        btnNuevo.hide();
+    }
+    else {
+        btnNuevo.show();
+        ObtenerPrestamos(seleccion);
+    }
+})
+
+btnCancelar.on("click", function () {
+    formPrestamo[0].reset();
 })
 
 formPrestamo.submit(function (e) {
     e.preventDefault();
-    AgregarPrestamo();
+ 
+    if (hdPrestamo.val() == "0" || hdPrestamo.val() == "")
+        AgregarPrestamo();
+    else
+        ActualizarPrestamo();
 })
+
+btnCancelar.on("click", function () {
+    formPrestamo[0].reset();
+})
+
+function ObtenerPrestamo(e) {
+    let row = $(e);
+
+    hdPrestamo.val(row.attr('d'));
+    fetch(urlAPI + "/prestamo/obtenerPrestamos?idCliente=" + ddCliente.val() + "&idPrestamo=" + row.attr('d'))
+        .then(data => data.json())
+        .then(res => {
+            if (res != null) {
+                if (res.exito) {
+                    if (res.dato.length > 0) {
+                        let pr = res.dato[0];
+                        ddTipoPrestamo.val(Number(pr.tipoPrestamo.idTipoPrestamo));
+                        txtFechaInicio.val(toFechaInput(pr.fechaInicio));
+                        txtFechaFin.val(toFechaInput(pr.fechaFin));
+                        ddMoneda.val(pr.moneda.idMoneda);
+                        txtMontoSolicitado.val(pr.montoSolicitado);
+                        txtMontoAprobado.val(pr.montoAprobado);
+                        txtPlazoFinanciamiento.val(pr.plazoFinanciamiento);
+                        ddEstado.val(pr.estado ? "true" : "false");
+                    } else
+                        setAdvertencia("No hay datos");
+
+                } else
+                    setAdvertencia(res.mensaje);
+            } else {
+                setError("Error al obtener prestamo");
+            }
+        })
+        .catch(error => {
+            setError(error);
+        })
+
+    modalPrestamo.modal("show");
+}
+
 
 function AgregarPrestamo() {
     let requestData = {
@@ -59,7 +118,7 @@ function AgregarPrestamo() {
                 setExito("Prestamo agregado");
                 modalPrestamo.modal("hide");
                 formPrestamo[0].reset();
-                ObtenerPrestamos();
+                ObtenerPrestamos(ddCliente.val());
             } else {
                 setAdvertencia(res.mensaje);
             }
@@ -78,13 +137,14 @@ function ObtenerClientes() {
             if (res != null) {
                 if (res.exito) {
                     if (res.dato.length > 0) {
-                        let html = "";
+                        let html = "",
+                            seleccione = "<option value='0'>-- Seleccione</option>";
                         res.dato.map((v, i) => {
                             html += `
-                                <option ${i == 0 ? 'selected': ''} value="${v.idCliente}">(${v.numeroIdentificacion}) - ${v.primerNombre} ${v.segundoNombre} ${v.primerApellido} ${v.segundoApellido}</option>
+                                <option value="${v.idCliente}">(${v.numeroIdentificacion}) - ${v.primerNombre} ${v.segundoNombre} ${v.primerApellido} ${v.segundoApellido}</option>
                             `;
                         });
-                        ddCliente.html(html);
+                        ddCliente.html(seleccione + html);
                     } else
                         setAdvertencia("No hay clientes registrados");
                 } else
@@ -97,6 +157,53 @@ function ObtenerClientes() {
             setError(error);
         })
 }
+
+
+function ActualizarPrestamo() {
+
+    let requestData = {
+        numeroPrestamo: hdPrestamo.val().trim(),
+        tipoPrestamo: {
+            idTipoPrestamo: ddTipoPrestamo.val()
+        },
+        cliente: {
+            idCliente: ddCliente.val()
+        },
+        fechaInicio: txtFechaInicio.val(),
+        fechaFin: txtFechaFin.val(),
+        montoSolicitado: txtMontoSolicitado.val().trim(),
+        moneda: {
+            idMoneda: ddMoneda.val()
+        },
+        montoAprobado: txtMontoAprobado.val(),
+        plazoFinanciamiento: txtPlazoFinanciamiento.val().trim(),
+        estado: ddEstado.val()
+    }
+    console.log(requestData.estado);
+
+    fetch(urlAPI + 'Prestamo/actualizarPrestamo', {
+        method: "PUT",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(data => data.json())
+        .then(res => {
+            if (res.exito) {
+                setExito("Prestamo actualizado");
+                modalPrestamo.modal("hide");
+                formPrestamo[0].reset();
+                ObtenerPrestamos(ddCliente.val());
+            } else {
+                setAdvertencia(res.mensaje);
+            }
+        })
+        .catch(error => {
+            setError(error);
+        })
+}
+
 
 
 ObtenerCatalogos();
@@ -133,7 +240,7 @@ function ObtenerCatalogos() {
 
 function ObtenerPrestamos(c) {
     tbodyPrestamos.html("");
-    fetch(urlAPI + "/prestamo/obtenerPrestamos?idCliente=" + c)
+    fetch(urlAPI + "/prestamo/obtenerPrestamos?idCliente=" + c + "&idPrestamo=0")
         .then(data => data.json())
         .then(res => {
             if (res != null) {
@@ -153,7 +260,7 @@ function ObtenerPrestamos(c) {
                                     <td>${toDecimal(v.montoAprobado)}</td>
                                     <td>${v.plazoFinanciamiento} Meses</td>
                                     <td>${v.estado == true ? 'Activo' : 'Inactivo'}</td>
-                                    <td><button d="${v.idCliente}" onclick="ObtenerCliente(this)" class="btn btn-primary btn-sm bg-color1 text-white">Editar</button></td>
+                                    <td><button d="${v.numeroPrestamo}" onclick="ObtenerPrestamo(this)" class="btn btn-primary btn-sm bg-color1 text-white">Editar</button></td>
                                 <tr>
                             `;
                         });

@@ -27,3 +27,24 @@
     color: var(--color3);
 }
 
+.ficha {
+    transition: 0.5s;
+}
+.ficha:hover {
+    transform: scale(1.04);
+}
+
+#navbarSupportedContent .nav-link {
+    color: #fff;
+    font-weight: bold;
+    border-top: 1px solid var(--color3);
+    border-bottom: 1px solid var(--color3);
+    margin-right: 10px;
+    border-radius: 6px;
+    transition: 0.5s;
+}
+
+#navbarSupportedContent .nav-link:hover {
+    color: #fff;
+    background: var(--color3);
+}

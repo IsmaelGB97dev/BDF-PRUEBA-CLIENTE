@@ -35,6 +35,14 @@ function ToFecha(cadenaFecha) {
     return fechaFormateada;
 }
 
+function toFechaInput(inputFecha) {
+    inputFecha = ToFecha(inputFecha);
+    var partesFecha = inputFecha.split('/');
+    var fecha = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
+    var formatoInputDate = fecha.toISOString().split('T')[0];
+    return formatoInputDate;
+}
+
 function toDecimal(numero) {
     return numero.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\./g, 'X').replace(/,/g, '.').replace(/X/g, ',');
 }

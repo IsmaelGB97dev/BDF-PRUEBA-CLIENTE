@@ -111,9 +111,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\CatalogosController.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PrestamoController.cs" />
+    <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -139,9 +141,14 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\App\Direccion.js" />
     <Content Include="Scripts\App\Cliente.js" />
     <Content Include="Scripts\App\General.js" />
+    <Content Include="Scripts\App\Moneda.js" />
     <Content Include="Scripts\App\Prestamos.js" />
+    <Content Include="Scripts\App\Reportes.js" />
+    <Content Include="Scripts\App\TipoIdentificacion.js" />
+    <Content Include="Scripts\App\TipoPrestamo.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -176,9 +183,16 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Cliente\Index.cshtml" />
     <Content Include="Views\Prestamo\Index.cshtml" />
+    <Content Include="Views\Catalogos\Index.cshtml" />
+    <Content Include="Views\Catalogos\Direccion.cshtml" />
+    <Content Include="Views\Catalogos\TipoIdentificacion.cshtml" />
+    <Content Include="Views\Catalogos\TipoPrestamo.cshtml" />
+    <Content Include="Views\Catalogos\Moneda.cshtml" />
+    <Content Include="Views\Reportes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Imagenes\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
