@@ -156,6 +156,7 @@ function ObtenerCliente(e) {
                 if (res.exito) {
                     if (res.dato.length > 0) {
                         let cl = res.dato[0];
+                        console.log(cl.estado);
                         ddTipoIdentificacion.val(cl.tipoIdentificacion.idTipoIdentificacion);
                         txtNumeroIdentificacion.val(cl.numeroIdentificacion);
                         txtPrimerNombre.val(cl.primerNombre);
@@ -163,7 +164,7 @@ function ObtenerCliente(e) {
                         txtPrimerApellido.val(cl.primerApellido);
                         txtSegundoApellido.val(cl.segundoApellido);
                         ddDireccion.val(cl.direccion.idDireccion);
-                        ddEstado.val(cl.estado ? 1 : 0);
+                        ddEstado.val(cl.estado == true ? "true" : "false");
                     } else
                         setAdvertencia("No hay datos");
 
